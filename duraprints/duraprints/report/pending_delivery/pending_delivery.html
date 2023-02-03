@@ -1,0 +1,135 @@
+<style>
+    .green {color: green;}
+    .blue {color: blue;}
+    .heading {font-size: 14px; font-weight: bold;}
+    .sub-heading {font-size: 10px; font-weight: bold;}
+	@media screen {
+		.print-format .bold{
+			font-weight: bold;
+		}
+		.page-break {
+			padding: 0px 0px;
+			margin: 30px 0px;
+			border-bottom: 1px dashed #888;
+		}
+		.print-format th{
+			font-size: 12px;
+			padding: 3px !important;
+            text-align: center;
+		}
+		.page-break thead th{ text-align: center; }
+		
+		.print-format table tr td{
+			border-right: 0px ;
+            border-left: 0px;
+            padding: 0px;
+		}
+		/*.print-format table tr:last-child td{
+			display: none;
+   		}*/
+		
+	}
+	@media print {
+		@page {size: landscape; }
+		.print-format .bold{
+			font-weight: bold;
+		}
+		.print-format {
+			margin: 0px;
+			padding: 0px;
+			width: 100%;
+		}
+		.page-break thead th{ text-align: center; }
+
+		.print-format td{
+            font-size: 9px;
+			padding: 1px 2px !important;
+		}
+		.print-format th{
+			font-size: 9px;
+			padding: 1px !important;
+            text-align: center;
+        }
+        .print-format table tr td{
+			border-right: 0px ;
+            border-left: 0px;
+            padding: 0px;
+		}
+		/*.print-format table tr:last-child td{
+			display: none;
+   		}*/
+		
+	}	
+</style>
+<div class="row">
+    <div class="col-md-6 col-xs-6 text-left heading">
+        Pending Delivery List
+    </div>
+    <div class="col-md-6 col-xs-6 text-right sub-heading">
+        {% if (filters.from_date) { %}
+            {%= __("From: ") + dateutil.str_to_user(filters.from_date) %}
+        {% } %}
+        {% if (filters.to_date) { %}
+            {%= __("To: ") + dateutil.str_to_user(filters.to_date) %}
+        {% } %}
+        {% if (filters.customer) { %}
+            <br>{%= __("Customer: ") + filters.customer %}
+		{% } %}
+		{% if (filters.fabric_type) { %}
+            <br>{%= __("Fabric Type #: ") + filters.fabric_type %}
+        {% } %}
+        {% if (filters.sales_order) { %}
+            <br>{%= __("Sales Order #: ") + filters.sales_order %}
+        {% } %}
+        {% if (filters.po_no) { %}
+            <br>{%= __("PO #: ") + filters.po_no %}
+		{% } %}
+		
+    </div>
+</div>
+<div class="clear" style="height: 10px;"></div>
+<table class="table table-bordered" style="margin:0px;">
+	<thead>
+		<tr>
+            <th style="width:20px;" >Date</th>
+            <th style="width:20px;">SO No.</th>
+            <th style="width:110px;">Customer</th>
+			<th style="width:25px;">PO #</th>
+            <th style="width:150px;">Design Name</th>
+            <th style="width:25px;">Material</th>
+			<th style="width:40px;">Fabric Type</th>
+			<th style="width:20px;">GSM</th>
+            <th style="width:20px;">Width</th>
+            <th style="width:20px;">UOM</th>
+            
+            <th style="width:40px;">Order QTY</th>
+            <th style="width:40px;">Delivered QTY</th>
+            <th style="width:40px;">Pending QTY</th>
+        </tr>
+	</thead>
+	<tbody>
+        {% for(var i=0, l=data.length; i<l; i++) { %}
+			{% if ( data[i].transaction_date == "TOTAL" ) { %}
+			<tr class="text-right bold green bold-borders">
+			{% } else if ( data[i].transaction_date == "GRAND TOTAL" ) { %}
+			<tr class="text-right bold green bold-borders">
+			{% } else { %}
+			<tr class="text-right">
+			{% } %}
+                <td class="text-left">{%= data[i].transaction_date %}</td>
+                <td class="text-left">{%= data[i].so_no %}</td>
+                <td class="text-left">{%= data[i].customer %}</td>
+				<td class="text-left">{%= data[i].po_no %}</td>
+                <td class="text-left">{%= data[i].design_name %}</td>
+                <td class="text-left">{%= data[i].fabric_material %}</td>
+				<td class="text-left">{%= data[i].fabric_type %}</td>
+				<td>{%= data[i].fabric_gsm %}</td>
+                <td>{%= data[i].fabric_width %}</td>
+                <td class="text-left">{%= data[i].uom %}</td>
+                <td>{%= data[i].order_qty %}</td>	
+                <td>{%= data[i].delivered_qty %}</td>	
+                <td>{%= data[i].undelivered_qty %}</td>	
+			</tr>
+		{% } %}
+    </tbody>
+</table>

@@ -1,0 +1,248 @@
+{
+ "autoname": "naming_series:",
+ "creation": "2019-10-01 11:55:18.789158",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "title",
+  "column_break_3",
+  "customer",
+  "column_break_5",
+  "customer_abbreviation",
+  "column_break_6",
+  "date",
+  "section_break_8",
+  "fabric_code",
+  "is_customer_provided_fabric",
+  "fabric_name",
+  "fabric_group",
+  "fabric_weight_per_unit",
+  "column_break_15",
+  "process_code",
+  "process_name",
+  "column_break_18",
+  "default_design_uom",
+  "default_gap",
+  "default_width",
+  "default_height",
+  "designs_section",
+  "items",
+  "extra_section",
+  "fabric_uoms",
+  "column_break_24",
+  "fabric_properties"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "CITEM-"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_abbreviation",
+   "fieldtype": "Data",
+   "label": "Customer Abbreviation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "fabric_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fabric Code",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fabric_name",
+   "fieldtype": "Data",
+   "label": "Fabric Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fabric_group",
+   "fieldtype": "Data",
+   "label": "Fabric Group",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fabric_weight_per_unit",
+   "fieldtype": "Data",
+   "label": "Fabric Weight Per Unit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fabric_uoms",
+   "fieldtype": "Text",
+   "label": "Fabric UOMS",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "fabric_properties",
+   "fieldtype": "Text",
+   "label": "Fabric Properties",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "process_code",
+   "fieldtype": "Link",
+   "label": "Process Code",
+   "no_copy": 1,
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "process_name",
+   "fieldtype": "Data",
+   "label": "Process Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "designs_section",
+   "fieldtype": "Section Break",
+   "label": "Designs"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Compound Item"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_customer_provided_fabric",
+   "fieldtype": "Check",
+   "label": "Is Customer Provided Fabric"
+  },
+  {
+   "fieldname": "default_design_uom",
+   "fieldtype": "Select",
+   "label": "Default Design UOM",
+   "options": "\nPanel\nMeter\nYard",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_gap",
+   "fieldtype": "Data",
+   "label": "Default Gap",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "extra_section",
+   "fieldtype": "Section Break",
+   "label": "Extra"
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "default_width",
+   "fieldtype": "Data",
+   "label": "Default Width"
+  },
+  {
+   "fieldname": "default_height",
+   "fieldtype": "Data",
+   "label": "Default Height"
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "modified": "2021-01-19 16:27:19.926023",
+ "modified_by": "Administrator",
+ "module": "Duraprints",
+ "name": "Compound Production",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "title",
+ "track_changes": 1
+}

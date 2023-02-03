@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include duraprints *.css
+recursive-include duraprints *.csv
+recursive-include duraprints *.html
+recursive-include duraprints *.ico
+recursive-include duraprints *.js
+recursive-include duraprints *.json
+recursive-include duraprints *.md
+recursive-include duraprints *.png
+recursive-include duraprints *.py
+recursive-include duraprints *.svg
+recursive-include duraprints *.txt
+recursive-exclude duraprints *.pyc

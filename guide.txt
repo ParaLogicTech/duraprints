@@ -1,0 +1,2 @@
+bench get-app repo-link
+bench --site site1.local install-app duraprints

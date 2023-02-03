@@ -1,0 +1,29 @@
+$(document).ready(function () {  
+    var count = 0;  
+    var imgArray = [];
+    $('img').each(function () {  
+        var url = $(this).attr('src');             
+        count++;
+        if(urlExists(url) == 200) {
+            // success
+        }
+        else {
+            imgArray.push(url);
+            console.log(imgArray.toString());
+            //console.log(url); 
+        }
+
+        
+    });  
+    
+});  
+
+function urlExists(url) {
+ var http = jQuery.ajax({
+    type:"HEAD",
+    url: url,
+    async: false
+  })
+  return http.status;
+      // this will return 200 on success, and 0 or negative value on error
+}

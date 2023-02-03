@@ -1,0 +1,113 @@
+{
+ "creation": "2019-11-22 20:35:22.482012",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "image",
+  "image_name",
+  "width",
+  "height",
+  "gap",
+  "item_code",
+  "item_bom",
+  "column_break_6",
+  "wastage",
+  "design_uom",
+  "design_notes"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "image",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Image"
+  },
+  {
+   "columns": 2,
+   "fieldname": "image_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Image Name",
+   "print_hide": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "width",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Width in Inch"
+  },
+  {
+   "columns": 1,
+   "fieldname": "height",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Height in Inch"
+  },
+  {
+   "columns": 1,
+   "fieldname": "gap",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Gap in Inch"
+  },
+  {
+   "columns": 1,
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Code",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "default": "5",
+   "fieldname": "wastage",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Wastage %",
+   "no_copy": 1,
+   "options": "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "design_uom",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Design UOM",
+   "options": "\nPanel\nMeter\nYard"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "design_notes",
+   "fieldtype": "Text",
+   "label": "Design Notes"
+  },
+  {
+   "fieldname": "item_bom",
+   "fieldtype": "Data",
+   "label": "Item BOM",
+   "no_copy": 1,
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-01-13 16:13:27.516555",
+ "modified_by": "Administrator",
+ "module": "Duraprints",
+ "name": "Compound Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

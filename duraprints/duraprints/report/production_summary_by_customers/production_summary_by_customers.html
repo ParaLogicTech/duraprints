@@ -1,0 +1,114 @@
+<style>
+    .green {color: green;}
+    .blue {color: blue;}
+    .heading {font-size: 14px; font-weight: bold;}
+	@media screen {
+		.print-format .bold{
+			font-weight: bold;
+		}
+		.page-break {
+			padding: 0px 0px;
+			margin: 30px 0px;
+			border-bottom: 1px dashed #888;
+		}
+		.print-format th{
+			font-size: 12px;
+			padding: 3px !important;
+            text-align: center;
+		}
+		.page-break thead th{ text-align: center; }
+		
+		.print-format table tr td{
+			border-right: 0px ;
+            border-left: 0px;
+            padding: 0px;
+		}
+		.print-format table tr:last-child td{
+			display: none;
+   		}
+		
+	}
+	@media print {
+		/*@page {size: landscape; }*/
+		.print-format .bold{
+			font-weight: bold;
+		}
+		.print-format {
+			margin: 0px;
+			padding: 0px;
+			width: 100%;
+		}
+		.page-break thead th{ text-align: center; }
+
+		.print-format td{
+            font-size: 10px;
+			padding: 1px 2px !important;
+		}
+		.print-format th{
+			font-size: 10px;
+			padding: 1px !important;
+            text-align: center;
+        }
+        .print-format table tr td{
+			border-right: 0px ;
+            border-left: 0px;
+            padding: 0px;
+		}
+		.print-format table tr:last-child td{
+			display: none;
+   		}
+		
+	}	
+</style>
+<div class="row">
+    <div class="col-md-6 col-xs-6 text-center heading">
+        Production Summary by Customer
+    </div>
+    <div class="col-md-6 col-xs-6 text-right heading">
+        {% if (filters.from_date) { %}
+            {%= __("From: ") + dateutil.str_to_user(filters.from_date) %}
+        {% } %}
+        {% if (filters.to_date) { %}
+            {%= __("To: ") + dateutil.str_to_user(filters.to_date) %}
+        {% } %}
+    </div>
+</div>
+<div class="clear" style="height: 10px;"></div>
+<table class="table table-bordered" style="margin:0px;">
+	<thead>
+		<tr>
+            <th style="width:20%;" >{%= __("Customer Name") %}</th>
+            <th style="width:200px;">Contact Person</th>
+            <th style="width:120px;">Mobile Number</th>
+            <th style="width:80px;">Orders</th>
+			<th style="width:80px;" class="text-center">QTY in<br>Meters</th>
+        </tr>
+	</thead>
+	<tbody>
+        {% for(var i=0, l=data.length; i<l; i++) { %}
+            {% if ( data[i].customer_name != "TOP DESIGN" ) { %}
+			    <tr>
+					<td>{%= data[i].customer_name %}</td>
+					<td>{%= data[i].contact_person %}</td>
+                    <td>{%= data[i].contact_mobile %}</td>
+                    <td class="text-right">{%= data[i].order_count %}</td>
+                    <td class="text-right">{%= data[i].qty_in_meters %}</td>
+				</tr>
+			{% } %}
+		{% } %}	
+	</tbody>
+</table>
+
+<div class="clear" style="height: 10px;"></div>
+<h2 class="text-center">Top Designs</h2>
+<div class="row">
+    {% for(var i=0, l=data.length; i<l; i++) { %}
+        {% if ( data[i].customer_name == "TOP DESIGN" && data[i].order_count != "" ) { %}
+            <div class="col-md-4 col-xs-4 text-center heading">
+                <img style="width: auto; max-height: 100px; max-width: 100px; display: block; margin: 0px auto;" src='https://erp.duraprints.pk{%= data[i].order_count %}'/>
+                <br>
+                {%= data[i].qty_in_meters %} Meters
+            </div>
+        {% } %}
+    {% } %}	
+</div>

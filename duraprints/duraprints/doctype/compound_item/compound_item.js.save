@@ -1,0 +1,281 @@
+ls// Copyright (c) 2019, Frappe Technologies Pvt. Ltd. and contributors
+// For license information, please see license.txt
+
+// url /home/frappe/frappe-bench/apps/erpnext/erpnext/stock/doctype/compound_item
+
+cur_frm.fields_dict['fabric_code'].get_query = function(doc) {
+	return {
+		filters: [
+			['Item', 'item_group', 'in', 'Polyester fabrics,Cotton fabrics,Silk fabrics,Viscose fabrics']
+		]
+	}
+}
+cur_frm.fields_dict['process_code'].get_query = function(doc) {
+	return {
+		filters: [
+			['Item', 'item_group', 'in', 'Process']
+		]
+	}
+}
+
+frappe.ui.form.on('Compound Item', {
+	refresh: function(frm, cdt, cdn) {
+		frm.add_custom_button(__('Fetch Images'), function(){
+			//frappe.msgprint("Test");
+			frm.call({
+				method: "erpnext.stock.doctype.compound_item.compound_item.get_all_attachments",
+				args: {
+					document: frappe.model.get_doc(cdt, cdn),
+				},
+				callback: function(r) {
+					//frappe.model.set_value(cdt, cdn, "primary_item_name", r.message);
+					console.log(JSON.stringify(r));
+					
+					if(r.message.length != 0){
+						for(var i=0; i<r.message.length; i++){
+							var imgURL = r.message[i];
+							var filename = imgURL.substring(imgURL.lastIndexOf('/')+1);
+							var filenameText = filename.replace(/\.[^/.]+$/, "");
+							frappe.model.set_value(cdt, cdn, "image_"+(i+1), r.message[i]);
+							frappe.model.set_value(cdt, cdn, "image_title_"+(i+1), filenameText);
+						}
+					}else{
+						frappe.msgprint("Attach images first.");
+					}
+					
+				}
+			});
+		});
+		frm.add_custom_button(__('Create Items'), function(){
+			var compound_item = frappe.model.get_doc(cdt, cdn);
+			//console.log(compound_item);
+			///console.log(compound_item.name);
+			//console.log(compound_item.creation);
+			if(typeof compound_item.creation != 'undefined'){
+				var custom_date = compound_item.date.split("-");
+				var uoms = JSON.parse(compound_item.fabric_uoms);
+				var attributes = JSON.parse(compound_item.fabric_properties);
+				var gsm,width,type,construction,source = "";
+				for(var i=0; i<attributes.length; i++){
+
+					if(attributes[i].attribute == 'GSM'){
+						gsm = attributes[i].attribute_value;
+					}
+					if(attributes[i].attribute == 'Width'){
+						width = attributes[i].attribute_value;
+					}
+					if(attributes[i].attribute == 'Type'){
+						type = attributes[i].attribute_value;
+					}
+					if(attributes[i].attribute == 'Construction'){
+						construction = attributes[i].attribute_value;
+					}
+					if(attributes[i].attribute == 'Source'){
+						source = attributes[i].attribute_value;
+					}
+				}
+				//console.log("GSM: " +gsm);
+				var sCount = 0;
+				for(var i=1; i<=12; i++){
+					var image = "image_"+i;
+					var imageTitleField = "image_title_"+i;
+					var imgURL = compound_item[image];
+					var imageTitle = compound_item[imageTitleField];
+					if(imgURL != undefined || imageTitle != undefined){
+						//console.log(imgURL);
+						if(imgURL != undefined ){
+							var filename = imgURL.substring(imgURL.lastIndexOf('/')+1);
+							var filenameText = filename.replace(/\.[^/.]+$/, "");
+						}else{
+							var filenameText = imageTitle;
+							imgURL = "";
+						}
+						var fabric_group = compound_item.fabric_group.split(" ");
+						//console.log(uoms);
+						frappe.call({
+							url: "/api/resource/Item/",
+							type: "post",
+							args: {
+								data: { 
+									"item_name" : compound_item.customer_abbreviation + '-' + compound_item.fabric_code + '-' + filenameText + '-' + custom_date[2]+custom_date[1],
+									"item_code" : compound_item.customer_abbreviation + '-' + compound_item.fabric_code + '-' + filenameText + '-' + custom_date[2]+custom_date[1],
+									"item_group" : "Printed " + fabric_group[0].toLowerCase(),
+									"image" : imgURL,
+									"stock_uom" : "Meter",
+									"weight_uom" : "Kg",
+									"weight_per_unit" : compound_item.fabric_weight_per_unit,
+									"default_material_request_type" : "Manufacture",
+									"is_purchase_item" : "0",
+									"fabric_gsm" : gsm,
+									"fabric_width": width,
+									"fabric_type" : type,
+									"fabric_source" : source,
+									"fabric_construction" : construction,
+									"uoms" : uoms,
+									"item_defaults" : [
+										{
+											"docstatus" : "0",
+											"default_warehouse" : "Finished Goods - DP",
+											"company" : "duraprints"
+										}
+									]
+								}
+							},
+							callback: function(r) {
+								//console.log(JSON.stringify(r));
+								//console.log(r.data);
+								//console.log(r.data.item_name);
+								sCount++;
+								
+								frappe.call({
+									url: "/api/resource/BOM/",
+									type: "post",
+									args: {
+										data: { 
+											"item" : r.data.item_code,
+											"docstatus": 1,
+											"items": [
+												{
+													"qty": "1.01",
+													"item_code": compound_item.fabric_code,
+													'uom': "Meter"
+												},
+												{
+													"qty": 1,
+													"item_code": compound_item.process_code,
+													'uom': "Meter"
+												}
+											]
+										}
+									},
+									callback: function(r) {
+										console.log(JSON.stringify(r));
+									}
+								});
+								
+								
+							}
+						});
+					}
+				}
+				if(sCount > 0){
+					frappe.msgprint("Successfully created "+sCount+" items");
+				}else{
+					frappe.msgprint("No items created, probably all items created.");
+				}
+			}else{
+				frappe.msgprint("Please save the document before creating items.");
+			}
+		});
+		
+		//var compound_item = frappe.model.get_doc(cdt, cdn);
+		//if(compound_item.fabric_uom == undefined){
+		//	frappe.model.set_value(cdt, cdn, "fabric_uom", "Meter");
+		//}
+		//alert();
+	},
+	customer: function(frm, cdt, cdn) {
+		var compound_item = frappe.model.get_doc(cdt, cdn);
+		if(typeof compound_item.customer != 'undefined'){
+			frm.call({
+				method: "erpnext.stock.doctype.compound_item.compound_item.get_customer",
+				args: {
+					customer: compound_item.customer
+				},
+				callback: function(r) {
+					//console.log(r);
+					frappe.model.set_value(cdt, cdn, "customer_abbreviation", r.message.customer_abbreviation);
+				}
+			});
+		}
+	},
+	fabric_code: function(frm, cdt, cdn) {
+		var compound_item = frappe.model.get_doc(cdt, cdn);
+		var uoms = [];
+		var attributes = [];
+		if(typeof compound_item.fabric_code != 'undefined'){
+			frm.call({
+				method: "erpnext.stock.doctype.compound_item.compound_item.get_item_name",
+				args: {
+					code: compound_item.fabric_code
+				},
+				callback: function(r) {
+					for(var i=0; i<r.message.uoms.length; i++){
+						//console.log(r.message.uoms[i].uom);
+						uoms[i] = {"uom" :r.message.uoms[i].uom, "conversion_factor": r.message.uoms[i].conversion_factor}
+					}
+					//console.log(uoms);
+					if(r.message.attributes.length > 1){
+						for(var i=0; i<r.message.attributes.length; i++){
+							console.log(r.message.attributes[i].attribute);
+							attributes[i] = {"attribute" :r.message.attributes[i].attribute, "attribute_value": r.message.attributes[i].attribute_value}
+						}
+					}
+					//console.log(attributes);
+					
+					//console.log(r);
+					frappe.model.set_value(cdt, cdn, "fabric_name", r.message.name);
+					frappe.model.set_value(cdt, cdn, "fabric_group", r.message.group);
+					frappe.model.set_value(cdt, cdn, "fabric_weight_per_unit", r.message.weight_per_unit);
+					frappe.model.set_value(cdt, cdn, "fabric_uoms", JSON.stringify(uoms) );
+					frappe.model.set_value(cdt, cdn, "fabric_properties", JSON.stringify(attributes) );
+				}
+			});
+		}
+	},
+	process_code: function(frm, cdt, cdn) {
+		var compound_item = frappe.model.get_doc(cdt, cdn);
+		if(typeof compound_item.process_code != 'undefined'){
+			frm.call({
+				method: "erpnext.stock.doctype.compound_item.compound_item.get_item_name",
+				args: {
+					code: compound_item.process_code
+				},
+				callback: function(r) {
+					console.log(r);
+					frappe.model.set_value(cdt, cdn, "process_name", r.message.name);
+				}
+			});
+		}
+	},
+	create_items: function(frm, cdt, cdn) {
+		
+	},
+	fetch_images: function(frm, cdt, cdn){
+		/*
+		frm.call({
+			method: "erpnext.stock.doctype.compound_item.compound_item.get_all_attachments",
+			args: {
+				document: frappe.model.get_doc(cdt, cdn),
+			},
+			callback: function(r) {
+				//frappe.model.set_value(cdt, cdn, "primary_item_name", r.message);
+				console.log(JSON.stringify(r));
+				
+				if(r.message.length != 0){
+					for(var i=0; i<r.message.length; i++){
+						var imgURL = r.message[i];
+						var filename = imgURL.substring(imgURL.lastIndexOf('/')+1);
+						var filenameText = filename.replace(/\.[^/.]+$/, "");
+						frappe.model.set_value(cdt, cdn, "image_"+(i+1), r.message[i]);
+						frappe.model.set_value(cdt, cdn, "image_title_"+(i+1), filenameText);
+					}
+				}else{
+					alert("Attach images first.");
+				}
+				
+			}
+		});
+		*/
+	}
+});
+
+frappe.ui.form.on("Compound Item", "before_save", function(frm,cdt, cdn) {
+	var compound_item = frappe.model.get_doc(cdt, cdn);
+	var custom_date = compound_item.date.split("-");
+	//var item_name = compound_item.customer_abbreviation + '-' + compound_item.fabric_code + '-' + custom_date[2]+custom_date[1];
+	
+	var item_name = compound_item.fabric_code + '-' + custom_date[2]+custom_date[1];
+	frappe.model.set_value(cdt, cdn, "title", item_name);
+	
+});

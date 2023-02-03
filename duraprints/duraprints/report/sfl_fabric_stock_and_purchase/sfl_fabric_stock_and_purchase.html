@@ -1,0 +1,132 @@
+<style>
+    .green {color: green;}
+    .blue {color: blue;}
+    .heading {font-size: 14px; font-weight: bold;}
+    @media screen {
+        .print-format .bold{
+            font-weight: bold;
+        }
+        .page-break {
+            padding: 0px 0px;
+            margin: 30px 0px;
+            border-bottom: 1px dashed #888;
+        }
+        .print-format th{
+            font-size: 12px;
+            padding: 3px !important;
+            text-align: center;
+        }
+        .page-break thead th{ text-align: center; }
+        
+        .print-format table tr td{
+            border-right: 0px ;
+            border-left: 0px;
+            padding: 0px;
+        }
+        /*print-format table tr:last-child td{
+            display: none;
+        }*/
+        
+    }
+    @media print {
+        @page {size: landscape; }
+        .print-format .bold{
+            font-weight: bold;
+        }
+        .print-format {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+        }
+        .page-break thead th{ text-align: center; }
+
+        .print-format td{
+            font-size: 10px;
+			padding: 1px 2px !important;
+		}
+		.print-format th{
+			font-size: 10px;
+			padding: 1px !important;
+            text-align: center;
+        }
+        .print-format table tr td{
+            border-right: 0px ;
+            border-left: 0px;
+            padding: 0px;
+        }
+        /*.print-format table tr:last-child td{
+            display: none;
+        }*/
+        
+    }	
+</style>
+<div class="row">
+    <div class="col-md-4 col-xs-4 text-center heading">
+        SFL Fabric Stock & Purchase Report
+    </div>
+    <div class="col-md-4 col-xs-4 text-right heading">
+        {% if (filters.from_date) { %}
+            {%= __("From: ") + dateutil.str_to_user(filters.from_date) %}
+        {% } %}
+        {% if (filters.to_date) { %}
+            {%= __("To: ") + dateutil.str_to_user(filters.to_date) %}
+        {% } %}
+    </div>
+</div>
+<div class="clear" style="height: 10px;"></div>
+<table class="table table-bordered" style="margin:0px;">
+    <thead>
+        <tr>
+            <th style="width:300px;" >{%= __("Item Name") %}</th>
+            <th style="width:40px;">Opening</th>
+            <th style="width:40px;">Purchase</th>
+            <th style="width:40px;">Purchase<br>Return</th>
+            <th style="width:40px;">Net<br>Purchase</th>
+            <th style="width:60px;">Purchase<br>Value</th>
+            <th style="width:40px;">Use</th>
+            <th style="width:40px;">Closing</th>
+            <th style="width:30px;">Re-Order</th>
+            <th style="width:30px;">Unit</th>
+            <th style="width:40px;">Rate</th>
+            <th style="width:60px;">Value</th>
+            <th>Remarks</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for(var i=0, l=data.length; i<l; i++) { %}
+            {% if ( data[i].item == "SUB TOTAL" ) { %}
+            <tr class="text-right bold green bold-borders">
+            {% } else if ( data[i].item == "GRAND TOTAL" ) { %}
+            <tr class="text-right bold green bold-borders">
+            {% } else if ( data[i].opening_balance == "" ) { %}
+            <tr class="text-right bold blue bold-borders">
+            {% } else { %}
+            <tr class="text-right">
+            {% } %}
+
+                {% if ( data[i].opening_balance == "" ) { %}
+                    <td colspan="13" class="text-left">{%= data[i].item %}</td>
+                {% } else { %}
+                    <td class="text-left">{%= data[i].item %}</td>
+                    <td>{%= data[i].opening_balance %}</td>
+                    <td>{%= data[i].purchase %}</td>
+                    <td>{%= data[i].purchase_return %}</td>
+                    <td>{%= data[i].net_purchase %}</td>
+                    <td>{%= data[i].purchase_value %}</td>
+                    <td>{%= data[i].use %}</td>
+                    <td>{%= data[i].closing_balance %}</td>
+                    <td>{%= data[i].re_order %}</td>
+                    <td>{%= data[i].unit %}</td>
+                    <td>{%= data[i].rate %}</td>
+                    <td>{%= data[i].stock_value %}</td>
+                    <td>{%= data[i].remarks %}</td>
+                </tr>
+            {% } %}
+            {% if (data[i].item == "TOTAL" ) { %}
+            <tr>
+                <td colspan="13"></td>
+            </tr>
+            {% } %}
+        {% } %}	
+    </tbody>
+</table>
